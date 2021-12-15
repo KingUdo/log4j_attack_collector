@@ -18,16 +18,16 @@ log = queue.Queue()
 @app.route('/')
 def index():
     for item in request.headers:
-        q.put({"type": item[0], "value": item[1]})
-    return abort(401)
+        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
+    return "False"
 
 @app.route('/<route>')
 def route(route):
-    q.put({"type": "URL_PATH", "value": request.url})
+    q.put({"ip": request.remote_addr, "type": "URL_PATH", "value": request.url})
 
     for item in request.headers:
-        q.put({"type": item[0], "value": item[1]})
-    return jsonify("{}")
+        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
+    return "False"
 
 
 def test(item):
