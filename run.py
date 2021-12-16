@@ -1,6 +1,7 @@
 #!/usr/bin/env
 import json
 
+from datetime import datetime
 from flask import Flask, request, jsonify, abort, make_response, render_template
 import socket, sys, threading, _thread, queue
 import time
@@ -55,7 +56,9 @@ def detector():
 def logger():
     while True:
         item = log.get()
+        now = datetime.now()
         with open('attack_log.txt', 'a') as file:
+            item["timestamp"] = now.isoformat()
             file.write(json.dumps(item)+ '\n')
 
 def main(port, ssl):
