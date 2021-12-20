@@ -26,11 +26,6 @@ char_list = [['$', '{', 'j', 'n', 'd', 'i', ':', 'l', 'd', 'a', 'p', ':'],
 q = queue.Queue()
 log = queue.Queue()
 
-#@app.route('/')
-#def index():
-#    for item in request.headers:
-#        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
-#    return ""
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def route(path):
