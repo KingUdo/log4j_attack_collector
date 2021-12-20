@@ -36,14 +36,38 @@ def route(path):
     return ""
 
 
-def nslookup(domain):
-    ip_list = []
-    ais = socket.getaddrinfo(domain, 0, 0, 0, 0)
-    for result in ais:
-        ip_list.append(result[-1][0])
-    ip_list = list(set(ip_list))
-    return ip_list
+@app.after_request
+def after_request(response):
+    # Add and remove custom headers for Security reasons
+    # https://github.com/shieldfy/API-Security-Checklist/blob/master/README-de.md
+    # and after Astra Security Check
+    ContentSecurityPolicy = ''
+    ContentSecurityPolicy += "default-src 'self'; "
+    ContentSecurityPolicy += "script-src 'self' 'unsafe-inline'; "
+    ContentSecurityPolicy += "style-src 'self' 'unsafe-inline'; "
+    ContentSecurityPolicy += "img-src 'self' data:; "
+    ContentSecurityPolicy += "connect-src 'self';"
+    response.headers.add('Content-Security-Policy', ContentSecurityPolicy)
+    response.headers.add('X-Content-Type-Options', 'nosniff')
+    response.headers.add('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    response.headers.add('X-Frame-Options', 'deny')
+    response.headers.add('Access-Control-Allow-Methods', 'GET')
+    response.headers.add('X-XSS-Protection', '1; mode=block')
+    response.headers.set('Server', '')
 
+    return response
+
+
+
+def nslookup(domain):
+    try:
+        ip_list = []
+        ais = socket.getaddrinfo(domain, 0, 0, 0, 0)
+        for result in ais:
+            ip_list.append(result[-1][0])
+        ip_list = list(set(ip_list))
+    except:
+        pass
 
 def test(item):
     counter = 0
