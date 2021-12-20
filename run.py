@@ -1,6 +1,7 @@
 #!/usr/bin/env
 import json
 import socket
+from datetime import datetime
 from flask import Flask, request, jsonify, abort, make_response, render_template
 import socket, sys, threading, _thread, queue
 import time
@@ -28,16 +29,16 @@ log = queue.Queue()
 @app.route('/')
 def index():
     for item in request.headers:
-        q.put({"type": item[0], "value": item[1]})
-    return abort(401)
+        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
+    return "False"
 
 @app.route('/<route>')
 def route(route):
-    q.put({"type": "URL_PATH", "value": request.url})
+    q.put({"ip": request.remote_addr, "type": "URL_PATH", "value": request.url})
 
     for item in request.headers:
-        q.put({"type": item[0], "value": item[1]})
-    return jsonify("{}")
+        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
+    return "False"
 
 
 def nslookup(domain):
@@ -88,7 +89,9 @@ def logger():
             nslookup(item)
 
 
+        now = datetime.now()
         with open('attack_log.txt', 'a') as file:
+            item["timestamp"] = now.isoformat()
             file.write(json.dumps(item)+ '\n')
 
 def main(port, ssl):
