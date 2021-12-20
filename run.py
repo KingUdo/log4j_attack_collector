@@ -16,19 +16,19 @@ char_dict = ['$', '{', 'j', 'n', 'd', 'i', ':', 'l', 'd', 'a', 'p', ':']
 q = queue.Queue()
 log = queue.Queue()
 
-@app.route('/')
-def index():
-    for item in request.headers:
-        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
-    return "False"
-
-@app.route('/<route>')
-def route(route):
+#@app.route('/')
+#def index():
+#    for item in request.headers:
+#        q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
+#    return ""
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def route(path):
     q.put({"ip": request.remote_addr, "type": "URL_PATH", "value": request.url})
 
     for item in request.headers:
         q.put({"ip": request.remote_addr, "type": item[0], "value": item[1]})
-    return "False"
+    return ""
 
 
 def test(item):
