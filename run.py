@@ -101,11 +101,11 @@ def logger():
         item = log.get()
 
         # nslookup domain
-        url = get_url(item)
-        for item in url:
-            item = item.replace('${hostName}', 'ubuntu')
-            print(item)
-            nslookup(item)
+        urls = get_url(item)
+        for url in urls:
+            url =url.replace('${hostName}', 'ubuntu')
+            print("nslookup for {}".format(url))
+            nslookup(url)
 
 
         now = datetime.now()
