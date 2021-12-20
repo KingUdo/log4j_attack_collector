@@ -27,7 +27,7 @@ q = queue.Queue()
 log = queue.Queue()
 
 @app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+@app.route('/<path:path>', methods=('GET', 'POST'))
 def route(path):
     q.put({"ip": request.remote_addr, "type": "URL_PATH", "value": request.url})
 
@@ -103,7 +103,8 @@ def logger():
         # nslookup domain
         urls = get_url(item)
         for url in urls:
-            url =url.replace('${hostName}', 'ubuntu')
+            url = url.replace('${hostName}', 'ubuntu')
+            url = url.replace('${jn:java.version}', '2.12.3')
             print("nslookup for {}".format(url))
             nslookup(url)
 
